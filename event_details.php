@@ -2,6 +2,7 @@
 // Event details page.
 session_start();
 require_once 'db.php';
+require_once __DIR__ . '/includes/site_styles.php';
 
 // $event holds the single event record we are about to display.
 // $saveMessage and $saveError are used for success/error messages after a user
@@ -9,6 +10,11 @@ require_once 'db.php';
 $event = null;
 $saveMessage = '';
 $saveError = '';
+$backLink = 'student_functions.php?view=events';
+
+if (($_SESSION['user_role'] ?? '') === 'admin') {
+    $backLink = 'admin_functions.php?view=events';
+}
 
 // When a student saves an event from another page, they are sent back here with a
 // status value so this page can show a clear message like "saved" or "duplicate".
@@ -52,13 +58,13 @@ if (isset($_GET['event_id'])) {
         body {
             font-family: Arial, sans-serif;
             background: #f4f4f4;
-            margin: 40px;
+            margin: 0;
             color: #111111;
         }
 
         .container {
             max-width: 800px;
-            margin: 0 auto;
+            margin: 30px auto 0;
             background: white;
             padding: 30px;
             border-radius: 12px;
@@ -156,9 +162,70 @@ if (isset($_GET['event_id'])) {
             border-radius: 8px;
             padding: 20px;
         }
+
+        .topbar {
+            background: #111111;
+            color: white;
+            padding: 10px 0;
+            position: relative;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand img {
+            max-height: 50px;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .nav a:hover {
+            background: rgba(255,255,255,0.1);
+        }
     </style>
 </head>
 <body>
+    <header class="topbar">
+        <div class="brand">
+            <?php if (($_SESSION['user_role'] ?? '') === 'admin') : ?>
+                <a href="admin_functions.php?view=events" aria-label="SWC Student events"><img src="images/Logo_cropped.png" alt="SWC Student events"></a>
+            <?php else : ?>
+                <a href="student_functions.php?view=events" aria-label="SWC Student events"><img src="images/Logo_cropped.png" alt="SWC Student events"></a>
+            <?php endif; ?>
+        </div>
+
+        <?php if (isset($_SESSION['user_id'])) : ?>
+            <nav class="nav">
+                <?php if (($_SESSION['user_role'] ?? '') === 'admin') : ?>
+                    <a href="admin_functions.php?view=events">Events</a>
+                    <a href="admin_functions.php">Add Event</a>
+                    <a href="logout.php" style="background: rgba(255,255,255,0.12);">Logout</a>
+                <?php else : ?>
+                    <a href="student_functions.php?view=events">Events</a>
+                    <a href="student_functions.php?view=saved">Saved Events</a>
+                    <a href="logout.php" style="background: rgba(255,255,255,0.12);">Logout</a>
+                <?php endif; ?>
+            </nav>
+        <?php endif; ?>
+    </header>
+
     <div class="container">
         <?php if ($event) : ?>
             <!-- Event exists, so render the full details panel and actions. -->
@@ -200,13 +267,13 @@ if (isset($_GET['event_id'])) {
                 </form>
             <?php endif; ?>
 
-            <!-- Return to the student event list after viewing the details. -->
-            <a class="button secondary" href="student_functions.php?view=events">Back to Events</a>
+            <!-- Return to the student or admin event list after viewing the details. -->
+            <a class="button secondary" href="<?php echo htmlspecialchars($backLink); ?>">Back to Events</a>
         <?php else : ?>
             <!-- If no matching event is found, show an empty-state message. -->
             <div class="empty">
                 <h2>Event not found.</h2>
-                <a class="button" href="student_functions.php?view=events">Back to Events</a>
+                <a class="button" href="<?php echo htmlspecialchars($backLink); ?>">Back to Events</a>
             </div>
         <?php endif; ?>
     </div>
