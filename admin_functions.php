@@ -268,7 +268,7 @@ if ($categoryResult) {
 
         .brand img {
             display: block;
-            height: 42px;
+            height: 90px;
             width: auto;
         }
 
@@ -465,7 +465,7 @@ if ($categoryResult) {
 <body>
     <!-- Top navigation for the admin area. -->
     <header class="topbar">
-        <div class="brand"><a href="events.php" aria-label="SWC Student events"><img src="images/Logo.png" alt="SWC Student events"></a></div>
+        <div class="brand"><a href="events.php" aria-label="SWC Student events"><img src="images/Logo_cropped.png" alt="SWC Student events"></a></div>
 
         <nav class="nav">
             <a href="admin_functions.php?view=events">Events</a>

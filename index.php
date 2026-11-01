@@ -119,7 +119,7 @@ if ($result) {
 
         .brand img {
             display: block;
-            height: 42px;
+            height: 90px;
             width: auto;
         }
     </style>
@@ -127,7 +127,7 @@ if ($result) {
 <body>
     <header class="topbar">
         <!-- Brand logo that links to the homepage. -->
-        <div class="brand"><a href="index.php" aria-label="SWC Student events"><img src="images/Logo.png" alt="SWC Student events"></a></div>
+        <div class="brand"><a href="index.php" aria-label="SWC Student events"><img src="images/Logo_cropped.png" alt="SWC Student events"></a></div>
 
         <!-- Navigation bar for guests. Only shows login link. -->
         <nav class="nav">

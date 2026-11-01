@@ -39,7 +39,7 @@
 
     .brand img {
         display: block;
-        height: 42px;
+        height: 90px;
         width: auto;
     }
 

@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <!-- Top navigation bar for the login/register page. -->
     <header class="topbar">
-        <div class="brand"><a href="index.php" aria-label="SWC Student events"><img src="images/Logo.png" alt="SWC Student events"></a></div>
+        <div class="brand"><a href="index.php" aria-label="SWC Student events"><img src="images/Logo_cropped.png" alt="SWC Student events"></a></div>
 
         <nav class="nav">
             <a href="index.php">Home</a>
