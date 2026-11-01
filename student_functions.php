@@ -162,6 +162,14 @@ $result = $conn->query($sql);
         .brand a {
             color: white;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .brand img {
+            display: block;
+            height: 42px;
+            width: auto;
         }
 
         .nav {
@@ -322,7 +330,7 @@ $result = $conn->query($sql);
 </head>
 <body>
     <header class="topbar">
-        <div class="brand"><a href="events.php">SWC Student Events</a></div>
+        <div class="brand"><a href="events.php" aria-label="SWC Student events"><img src="images/Logo.png" alt="SWC Student events"></a></div>
 
         <nav class="nav">
             <a href="student_functions.php?view=events">Events</a>

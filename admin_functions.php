@@ -262,6 +262,14 @@ if ($categoryResult) {
         .nav a {
             color: white;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .brand img {
+            display: block;
+            height: 42px;
+            width: auto;
         }
 
         .nav {
@@ -457,7 +465,7 @@ if ($categoryResult) {
 <body>
     <!-- Top navigation for the admin area. -->
     <header class="topbar">
-        <div class="brand"><a href="events.php">SWC Student Events</a></div>
+        <div class="brand"><a href="events.php" aria-label="SWC Student events"><img src="images/Logo.png" alt="SWC Student events"></a></div>
 
         <nav class="nav">
             <a href="admin_functions.php?view=events">Events</a>

@@ -109,12 +109,25 @@ if ($result) {
             background: #e5e5e5;
             color: #111111;
         }
+
+        .brand a {
+            color: white;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .brand img {
+            display: block;
+            height: 42px;
+            width: auto;
+        }
     </style>
 </head>
 <body>
     <header class="topbar">
         <!-- Brand logo that links to the homepage. -->
-        <div class="brand"><a href="index.php">SWC Student Events</a></div>
+        <div class="brand"><a href="index.php" aria-label="SWC Student events"><img src="images/Logo.png" alt="SWC Student events"></a></div>
 
         <!-- Navigation bar for guests. Only shows login link. -->
         <nav class="nav">
