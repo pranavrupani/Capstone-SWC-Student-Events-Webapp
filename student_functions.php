@@ -135,16 +135,30 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <title><?php echo ($view === 'saved') ? 'My Saved Events' : 'Student Events'; ?></title>
     <style>
+        :root {
+            --nav-black: #111111;
+            --primary: #ffd76c;
+            --primary-dark: #f4c84f;
+            --primary-soft: rgba(255, 215, 108, 0.18);
+            --bg: #f4f4f4;
+            --panel: #ffffff;
+            --panel-soft: #fffaf0;
+            --text: #111111;
+            --muted: #333333;
+            --line: #e9d3a3;
+            --button-dark: #3c3c3c;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background: #f4f4f4;
+            background: var(--bg);
             margin: 0;
             padding: 0;
-            color: #111111;
+            color: var(--text);
         }
 
         .topbar {
-            background: #111111;
+            background: var(--nav-black);
             color: white;
             padding: 16px 28px;
             display: flex;
@@ -211,7 +225,7 @@ $result = $conn->query($sql);
             color: white;
             text-decoration: none;
             font-weight: bold;
-            background: #111111;
+            background: var(--primary);
             padding: 10px 14px;
             border-radius: 6px;
             display: inline-block;
@@ -221,7 +235,7 @@ $result = $conn->query($sql);
         }
 
         .logout-button {
-            background: #4b4b4b;
+            background: var(--button-dark);
         }
 
         .search-bar {
@@ -234,11 +248,11 @@ $result = $conn->query($sql);
         .search-bar input {
             padding: 10px 12px;
             font-size: 16px;
-            border: 1px solid #bdbdbd;
+            border: 1px solid var(--line);
             border-radius: 6px;
             min-width: 220px;
             background: white;
-            color: #111111;
+            color: var(--text);
         }
 
         .search-bar button, .event-button, .delete-button, .save-button {
@@ -251,12 +265,12 @@ $result = $conn->query($sql);
         }
 
         .search-bar button, .event-button, .save-button {
-            background: #111111;
-            color: white;
+            background: var(--primary);
+            color: var(--text);
         }
 
         .delete-button {
-            background: #4b4b4b;
+            background: var(--button-dark);
             color: white;
         }
 
@@ -267,11 +281,11 @@ $result = $conn->query($sql);
         }
 
         .event-card {
-            background: white;
+            background: var(--panel);
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid #d1d1d1;
+            border: 1px solid var(--line);
             display: flex;
             flex-direction: column;
         }
@@ -279,12 +293,12 @@ $result = $conn->query($sql);
         .event-card h2 {
             margin-top: 0;
             margin-bottom: 12px;
-            color: #111111;
+            color: var(--text);
         }
 
         .event-meta {
             margin: 4px 0;
-            color: #333333;
+            color: var(--muted);
         }
 
         .event-description {
@@ -302,11 +316,11 @@ $result = $conn->query($sql);
         }
 
         .empty-state {
-            background: white;
-            border: 1px solid #d1d1d1;
+            background: var(--panel);
+            border: 1px solid var(--line);
             border-radius: 8px;
             padding: 20px;
-            color: #111111;
+            color: var(--text);
         }
 
         .message {
@@ -314,17 +328,17 @@ $result = $conn->query($sql);
             padding: 12px 14px;
             border-radius: 8px;
             font-weight: bold;
-            border: 1px solid #bdbdbd;
+            border: 1px solid var(--line);
         }
 
         .message.success {
-            background: #eeeeee;
-            color: #111111;
+            background: var(--primary-soft);
+            color: var(--text);
         }
 
         .message.error {
-            background: #eeeeee;
-            color: #111111;
+            background: #f7efea;
+            color: var(--text);
         }
     </style>
 </head>
