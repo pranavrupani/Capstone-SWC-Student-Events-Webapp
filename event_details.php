@@ -55,17 +55,26 @@ if (isset($_GET['event_id'])) {
     <meta charset="UTF-8">
     <title>Event Details</title>
     <style>
+        :root {
+            --primary: #7f6db1;
+            --primary-dark: #685a95;
+            --nav-black: #111111;
+            --text: #111111;
+            --bg: #f4f4f4;
+            --white: #ffffff;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background: #f4f4f4;
+            background: var(--bg);
             margin: 0;
-            color: #111111;
+            color: var(--text);
         }
 
         .container {
             max-width: 800px;
             margin: 30px auto 0;
-            background: white;
+            background: var(--white);
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -74,7 +83,7 @@ if (isset($_GET['event_id'])) {
 
         h1 {
             margin-top: 0;
-            color: #111111;
+            color: var(--text);
         }
 
         .image-box {
@@ -119,8 +128,8 @@ if (isset($_GET['event_id'])) {
         .button {
             display: inline-block;
             margin-top: 20px;
-            background: #111111;
-            color: white;
+            background: var(--primary);
+            color: var(--white);
             padding: 10px 16px;
             border-radius: 6px;
             text-decoration: none;
@@ -128,7 +137,7 @@ if (isset($_GET['event_id'])) {
         }
 
         .button.secondary {
-            background: #4b4b4b;
+            background: var(--primary-dark);
             margin-left: 10px;
         }
 
@@ -139,17 +148,17 @@ if (isset($_GET['event_id'])) {
             font-weight: bold;
             border: 1px solid #bdbdbd;
             background: #eeeeee;
-            color: #111111;
+            color: var(--text);
         }
 
         .message.success {
             background: #eeeeee;
-            color: #111111;
+            color: var(--text);
         }
 
         .message.error {
             background: #eeeeee;
-            color: #111111;
+            color: var(--text);
         }
 
         form {
@@ -157,15 +166,15 @@ if (isset($_GET['event_id'])) {
         }
 
         .empty {
-            background: white;
+            background: var(--white);
             border: 1px solid #d1d1d1;
             border-radius: 8px;
             padding: 20px;
         }
 
         .topbar {
-            background: #111111;
-            color: white;
+            background: var(--nav-black);
+            color: var(--white);
             padding: 10px 0;
             position: relative;
             z-index: 1000;
@@ -188,7 +197,7 @@ if (isset($_GET['event_id'])) {
         }
 
         .nav a {
-            color: white;
+            color: var(--white);
             text-decoration: none;
             padding: 10px 15px;
             margin: 0 5px;

@@ -3,6 +3,16 @@
 // This keeps the common styling in one place and reduces repeated inline CSS blocks.
 ?>
 <style>
+    :root {
+        --primary: #7f6db1;
+        --primary-dark: #685a95;
+        --primary-soft: rgba(127, 109, 177, 0.12);
+        --text: #111111;
+        --bg: #f4f4f4;
+        --white: #ffffff;
+        --nav-black: #111111;
+    }
+
     * {
         box-sizing: border-box;
     }
@@ -10,13 +20,13 @@
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background: #f4f4f4;
-        color: #111111;
+        background: var(--bg);
+        color: var(--text);
     }
 
     .topbar {
-        background: #111111;
-        color: white;
+        background: var(--nav-black);
+        color: var(--white);
         padding: 16px 28px;
         display: flex;
         justify-content: space-between;
@@ -31,7 +41,7 @@
     }
 
     .brand a {
-        color: white;
+        color: var(--white);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
@@ -50,7 +60,7 @@
     }
 
     .nav a {
-        color: white;
+        color: var(--white);
         text-decoration: none;
         padding: 8px 12px;
         border-radius: 6px;

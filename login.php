@@ -114,10 +114,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Login / Register</title>
     <style>
+        :root {
+            --primary: #7f6db1;
+            --primary-dark: #685a95;
+            --bg: #f4f4f4;
+            --text: #111111;
+            --white: #ffffff;
+        }
+
         body {
-            background: #f4f4f4;
+            background: var(--bg);
             margin: 0;
-            color: #111111;
+            color: var(--text);
             font-family: Arial, sans-serif;
         }
 
@@ -131,7 +139,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .box {
-            background: white;
+            background: var(--white);
             border: 1px solid #d1d1d1;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -161,14 +169,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #bdbdbd;
             border-radius: 6px;
             font-size: 16px;
-            background: white;
-            color: #111111;
+            background: var(--white);
+            color: var(--text);
         }
 
         button {
             width: 100%;
-            background: #111111;
-            color: white;
+            background: var(--primary);
+            color: var(--white);
             border: none;
             border-radius: 6px;
             padding: 12px 16px;
@@ -184,7 +192,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 16px;
             border: 1px solid #bdbdbd;
             background: #eeeeee;
-            color: #111111;
+            color: var(--text);
         }
     </style>
 </head>

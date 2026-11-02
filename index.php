@@ -40,6 +40,15 @@ if ($result) {
     <meta charset="UTF-8">
     <title>SWC Student Events</title>
     <style>
+        :root {
+            --primary: #7f6db1;
+            --primary-dark: #685a95;
+            --primary-soft: rgba(127, 109, 177, 0.12);
+            --text: #111111;
+            --bg: #f4f4f4;
+            --white: #ffffff;
+        }
+
         .container {
             max-width: 1100px;
             margin: 40px auto;
@@ -47,8 +56,8 @@ if ($result) {
         }
 
         .hero {
-            background: linear-gradient(135deg, #111111, #4a4a4a);
-            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: var(--white);
             padding: 32px 28px;
             border-radius: 16px;
             margin-bottom: 30px;
@@ -71,7 +80,7 @@ if ($result) {
         }
 
         .event-card {
-            background: white;
+            background: var(--white);
             border-radius: 12px;
             padding: 22px;
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
@@ -97,8 +106,8 @@ if ($result) {
 
         .btn {
             display: inline-block;
-            background: #111111;
-            color: white;
+            background: var(--primary);
+            color: var(--white);
             text-decoration: none;
             padding: 12px 18px;
             border-radius: 8px;
@@ -107,11 +116,11 @@ if ($result) {
 
         .btn.secondary {
             background: #e5e5e5;
-            color: #111111;
+            color: var(--text);
         }
 
         .brand a {
-            color: white;
+            color: var(--white);
             text-decoration: none;
             display: inline-flex;
             align-items: center;
