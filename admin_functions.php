@@ -234,16 +234,30 @@ if ($categoryResult) {
     <meta charset="UTF-8">
     <title><?php echo $view === 'events' ? 'Admin Events' : ($editing ? 'Edit Event' : 'Add Event'); ?></title>
     <style>
+        :root {
+            --nav-black: #111111;
+            --primary: #9ec3dc;
+            --primary-dark: #7aa9c3;
+            --primary-soft: rgba(158, 195, 220, 0.18);
+            --bg: #f4f4f4;
+            --panel: #ffffff;
+            --panel-soft: #f3f7fa;
+            --text: #111111;
+            --muted: #333333;
+            --line: #d7e1e8;
+            --button-dark: #2d2d2d;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            background: #f4f4f4;
+            background: var(--bg);
             margin: 0;
             padding: 0;
-            color: #111111;
+            color: var(--text);
         }
 
         .topbar {
-            background: #111111;
+            background: var(--nav-black);
             color: white;
             padding: 16px 28px;
             display: flex;
@@ -291,11 +305,11 @@ if ($categoryResult) {
         .container {
             max-width: 1100px;
             margin: 0 auto;
-            background: white;
+            background: var(--panel);
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid #d1d1d1;
+            border: 1px solid var(--line);
             margin-top: 24px;
             margin-bottom: 40px;
         }
@@ -312,32 +326,32 @@ if ($categoryResult) {
             color: white;
             text-decoration: none;
             font-weight: bold;
-            background: #111111;
+            background: var(--primary);
             padding: 10px 14px;
             border-radius: 6px;
             display: inline-block;
         }
 
         .logout-button {
-            background: #4b4b4b;
+            background: var(--button-dark);
         }
 
         .message {
             padding: 12px 14px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border: 1px solid #bdbdbd;
-            background: #eeeeee;
-            color: #111111;
+            border: 1px solid var(--line);
+            background: var(--panel-soft);
+            color: var(--text);
         }
 
         .success {
-            background: #eeeeee;
-            color: #111111;
+            background: var(--primary-soft);
+            color: var(--text);
         }
 
         .error {
-            background: #eeeeee;
+            background: #f5eded;
             color: #111111;
         }
 
@@ -357,9 +371,9 @@ if ($categoryResult) {
             padding: 10px 12px;
             font-size: 16px;
             border-radius: 6px;
-            border: 1px solid #bdbdbd;
+            border: 1px solid var(--line);
             background: white;
-            color: #111111;
+            color: var(--text);
         }
 
         textarea {
@@ -368,8 +382,8 @@ if ($categoryResult) {
         }
 
         button {
-            background: #111111;
-            color: white;
+            background: var(--primary);
+            color: var(--text);
             border: none;
             cursor: pointer;
             font-weight: bold;
@@ -382,11 +396,11 @@ if ($categoryResult) {
         }
 
         .event-card {
-            background: white;
+            background: var(--panel);
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid #d1d1d1;
+            border: 1px solid var(--line);
             display: flex;
             flex-direction: column;
         }
@@ -394,12 +408,12 @@ if ($categoryResult) {
         .event-card h2 {
             margin-top: 0;
             margin-bottom: 12px;
-            color: #111111;
+            color: var(--text);
         }
 
         .event-meta {
             margin: 4px 0;
-            color: #333333;
+            color: var(--muted);
         }
 
         .event-description {
@@ -427,12 +441,12 @@ if ($categoryResult) {
         }
 
         .event-button {
-            background: #111111;
-            color: white;
+            background: var(--primary);
+            color: var(--text);
         }
 
         .delete-button {
-            background: #4b4b4b;
+            background: var(--button-dark);
             color: white;
         }
 
@@ -447,18 +461,18 @@ if ($categoryResult) {
             padding: 10px 12px;
             font-size: 16px;
             border-radius: 6px;
-            border: 1px solid #bdbdbd;
+            border: 1px solid var(--line);
             min-width: 220px;
             background: white;
-            color: #111111;
+            color: var(--text);
         }
 
         .empty-state {
-            background: white;
-            border: 1px solid #d1d1d1;
+            background: var(--panel);
+            border: 1px solid var(--line);
             border-radius: 8px;
             padding: 20px;
-            color: #111111;
+            color: var(--text);
         }
     </style>
 </head>
