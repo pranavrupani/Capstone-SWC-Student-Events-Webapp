@@ -13,25 +13,6 @@ if (isset($_SESSION['user_id'])) {
 
 require_once 'db.php';
 require_once __DIR__ . '/includes/site_styles.php';
-
-
-// This query selects only the basic event info (title, date, time, location) and
-// sorts by date so the earliest events appear first. limit to 3 cards so the
-// homepage remains clean and fast-loading.
-$sql = "SELECT event_id, title, event_date, event_time, location
-        FROM events
-        ORDER BY event_date ASC
-        LIMIT 3";
-
-$result = $conn->query($sql);
-$featuredEvents = [];
-
-// Store the query results in an array so we can loop through them in the HTML.
-if ($result) {
-    while ($row = $result->fetch_assoc()) {
-        $featuredEvents[] = $row;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -73,28 +54,19 @@ if ($result) {
             font-size: 18px;
         }
 
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 20px;
-        }
-
-        .event-card {
+        .calendar-panel {
             background: var(--white);
             border-radius: 12px;
-            padding: 22px;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
             border: 1px solid #d1d1d1;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            padding: 20px;
         }
 
-        .event-card h2 {
-            margin: 0 0 12px;
-            font-size: 22px;
-        }
-
-        .event-meta {
-            margin: 8px 0;
-            color: #333333;
+        .calendar-panel img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
         }
 
         .cta-row {
@@ -150,27 +122,10 @@ if ($result) {
         <!-- Hero section with the main headline and tagline. -->
         <section class="hero">
             <h1>Upcoming SWC Events</h1>
-            <p>Discover what is coming up in the SWC.</p>
         </section>
 
-        <!-- Featured events grid: displays the next 3 upcoming events. -->
-        <div class="events-grid">
-            <?php if (!empty($featuredEvents)) : ?>
-                <!-- Loop through each featured event and render a card. -->
-                <?php foreach ($featuredEvents as $event) : ?>
-                    <div class="event-card">
-                        <h2><?php echo htmlspecialchars($event['title']); ?></h2>
-                        <p class="event-meta"><strong>Date:</strong> <?php echo htmlspecialchars($event['event_date']); ?></p>
-                        <p class="event-meta"><strong>Time:</strong> <?php echo htmlspecialchars($event['event_time']); ?></p>
-                        <p class="event-meta"><strong>Location:</strong> <?php echo htmlspecialchars($event['location']); ?></p>
-                    </div>
-                <?php endforeach; ?>
-            <?php else : ?>
-                <!-- Fallback message when no events are in the database. -->
-                <div class="event-card">
-                    <h2>No events available right now.</h2>
-                </div>
-            <?php endif; ?>
+        <div class="calendar-panel">
+            <img src="images/November Calendar 2026.png" alt="November 2026 calendar">
         </div>
 
         <!-- Call-to-action buttons for guests to log in or register. -->
