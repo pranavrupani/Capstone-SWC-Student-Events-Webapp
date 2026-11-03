@@ -81,7 +81,18 @@ if (isset($_POST['delete_id'])) {
     }
 }
 
-$eventListLimit = $showAll ? '' : ' LIMIT 3';
+$categoryId = isset($_GET['category_id']) ? (int) $_GET['category_id'] : 0;
+$categorySql = "SELECT * FROM categories ORDER BY category_name ASC";
+$categoryResult = $conn->query($categorySql);
+$categories = [];
+if ($categoryResult) {
+    while ($row = $categoryResult->fetch_assoc()) {
+        $categories[] = $row;
+    }
+}
+
+$hasCategoryFilter = $categoryId > 0;
+$eventListLimit = ($showAll || $hasCategoryFilter) ? '' : ' LIMIT 3';
 
 $totalEventsSql = 'SELECT COUNT(*) AS total FROM events';
 $totalEventsResult = $conn->query($totalEventsSql);
@@ -91,18 +102,30 @@ if ($totalEventsResult && $totalEventsResult->num_rows > 0) {
 }
 
 if ($view === 'events') {
+    $whereSql = [];
     if ($search !== '') {
-        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
-                FROM events e
-                LEFT JOIN categories c ON e.category_id = c.category_id
-                WHERE LOWER(e.title) LIKE '%" . strtolower($search) . "%'
-                ORDER BY e.event_date ASC" . $eventListLimit;
-    } else {
-        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
-                FROM events e
-                LEFT JOIN categories c ON e.category_id = c.category_id
-                ORDER BY e.event_date ASC" . $eventListLimit;
+        $whereSql[] = "LOWER(e.title) LIKE '%" . strtolower($search) . "%'";
     }
+    if ($categoryId > 0) {
+        $whereSql[] = "e.category_id = $categoryId";
+    }
+
+    $whereClause = '';
+    if (!empty($whereSql)) {
+        $whereClause = ' WHERE ' . implode(' AND ', $whereSql);
+    }
+
+    $countSql = 'SELECT COUNT(*) AS total FROM events e' . $whereClause;
+    $countResult = $conn->query($countSql);
+    if ($countResult && $countResult->num_rows > 0) {
+        $totalEvents = (int) $countResult->fetch_assoc()['total'];
+    }
+
+    $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
+            FROM events e
+            LEFT JOIN categories c ON e.category_id = c.category_id
+            $whereClause
+            ORDER BY e.event_date ASC" . $eventListLimit;
 
     $result = $conn->query($sql);
 } else {
@@ -571,8 +594,16 @@ if ($categoryResult) {
             <form class="search-bar" method="GET" action="admin_functions.php">
                 <input type="hidden" name="view" value="events">
                 <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search event titles...">
+                <select name="category_id">
+                    <option value="0">All categories</option>
+                    <?php foreach ($categories as $category) : ?>
+                        <option value="<?php echo (int) $category['category_id']; ?>" <?php echo $categoryId === (int) $category['category_id'] ? 'selected' : ''; ?>>
+                            <?php echo htmlspecialchars($category['category_name']); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
                 <button type="submit">Search</button>
-                <?php if ($search !== '') : ?>
+                <?php if ($search !== '' || $categoryId > 0) : ?>
                     <a class="button-link" href="admin_functions.php?view=events">Clear</a>
                 <?php endif; ?>
             </form>
@@ -619,7 +650,7 @@ if ($categoryResult) {
 
             <?php if ($totalEvents > 3 && !$showAll) : ?>
                 <div class="load-more-wrap">
-                    <a class="load-more-button" href="admin_functions.php?view=events&show_all=1<?php echo $search !== '' ? '&search=' . urlencode($search) : ''; ?>">Load More Events</a>
+                    <a class="load-more-button" href="admin_functions.php?view=events&show_all=1<?php echo $search !== '' ? '&search=' . urlencode($search) : ''; ?><?php echo $categoryId > 0 ? '&category_id=' . (int) $categoryId : ''; ?>">Load More Events</a>
                 </div>
             <?php endif; ?>
         <?php else : ?>

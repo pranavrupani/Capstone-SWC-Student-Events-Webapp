@@ -48,6 +48,7 @@ $userId = (int) $_SESSION['user_id'];
 $view = $_GET['view'] ?? 'events';
 $search = trim($_GET['search'] ?? '');
 $showAll = isset($_GET['show_all']) && $_GET['show_all'] === '1';
+$categoryId = isset($_GET['category_id']) ? (int) $_GET['category_id'] : 0;
 $successMessage = '';
 $errorMessage = '';
 
@@ -130,12 +131,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // If the student is viewing saved events, load only the events they saved.
 // Otherwise, load all events, optionally filtered by search query.
-$studentEventLimit = $showAll ? '' : ' LIMIT 3';
-$countSql = 'SELECT COUNT(*) AS total FROM events';
+$hasCategoryFilter = $categoryId > 0;
+$studentEventLimit = ($showAll || $hasCategoryFilter) ? '' : ' LIMIT 3';
+
+$whereSql = [];
+if ($search !== '') {
+    $whereSql[] = "LOWER(e.title) LIKE '%" . strtolower($search) . "%'";
+}
+if ($categoryId > 0) {
+    $whereSql[] = "e.category_id = $categoryId";
+}
+
+$whereClause = '';
+if (!empty($whereSql)) {
+    $whereClause = ' WHERE ' . implode(' AND ', $whereSql);
+}
+
+$countSql = 'SELECT COUNT(*) AS total FROM events e' . $whereClause;
 $countResult = $conn->query($countSql);
 $totalEvents = 0;
 if ($countResult && $countResult->num_rows > 0) {
     $totalEvents = (int) $countResult->fetch_assoc()['total'];
+}
+
+$categorySql = "SELECT * FROM categories ORDER BY category_name ASC";
+$categoryResult = $conn->query($categorySql);
+$categories = [];
+if ($categoryResult) {
+    while ($row = $categoryResult->fetch_assoc()) {
+        $categories[] = $row;
+    }
 }
 
 if ($view === 'saved') {
@@ -147,20 +172,11 @@ if ($view === 'saved') {
             WHERE s.user_id = $userId
             ORDER BY e.event_date ASC";
 } else {
-    // Show all events, optionally filtered by search query on the title.
-    if ($search !== '') {
-        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
-                FROM events e
-                LEFT JOIN categories c ON e.category_id = c.category_id
-                WHERE LOWER(e.title) LIKE '%" . strtolower($search) . "%'
-                ORDER BY e.event_date ASC" . $studentEventLimit;
-    } else {
-        // No search filter, so load all events in order.
-        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
-                FROM events e
-                LEFT JOIN categories c ON e.category_id = c.category_id
-                ORDER BY e.event_date ASC" . $studentEventLimit;
-    }
+    $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
+            FROM events e
+            LEFT JOIN categories c ON e.category_id = c.category_id
+            $whereClause
+            ORDER BY e.event_date ASC" . $studentEventLimit;
 }
 
 // Execute the query and get the results.
@@ -291,6 +307,16 @@ $result = $conn->query($sql);
             min-width: 220px;
             background: white;
             color: var(--text);
+        }
+
+        .search-bar select {
+            padding: 10px 12px;
+            font-size: 16px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: white;
+            color: var(--text);
+            min-width: 180px;
         }
 
         .search-bar button, .event-button, .delete-button, .save-button {
@@ -445,8 +471,16 @@ $result = $conn->query($sql);
         <form class="search-bar" method="GET" action="student_functions.php">
             <input type="hidden" name="view" value="events">
             <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search event titles...">
+            <select name="category_id">
+                <option value="0">All categories</option>
+                <?php foreach ($categories as $category) : ?>
+                    <option value="<?php echo (int) $category['category_id']; ?>" <?php echo $categoryId === (int) $category['category_id'] ? 'selected' : ''; ?>>
+                        <?php echo htmlspecialchars($category['category_name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
             <button type="submit">Search</button>
-            <?php if ($search !== '') : ?>
+            <?php if ($search !== '' || $categoryId > 0) : ?>
                 <a class="button-link" href="student_functions.php?view=events">Clear</a>
             <?php endif; ?>
         </form>
@@ -502,7 +536,7 @@ $result = $conn->query($sql);
 
     <?php if ($view !== 'saved' && !$showAll && $totalEvents > 3) : ?>
         <div class="load-more-wrap">
-            <a class="load-more-button" href="student_functions.php?view=events&show_all=1<?php echo $search !== '' ? '&search=' . urlencode($search) : ''; ?>">Load More</a>
+            <a class="load-more-button" href="student_functions.php?view=events&show_all=1<?php echo $search !== '' ? '&search=' . urlencode($search) : ''; ?><?php echo $categoryId > 0 ? '&category_id=' . (int) $categoryId : ''; ?>">Load More</a>
         </div>
     <?php endif; ?>
 </body>
