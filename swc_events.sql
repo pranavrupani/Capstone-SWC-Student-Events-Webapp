@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Nov 03, 2026 at 06:11 AM
+-- Generation Time: Nov 03, 2026 at 06:33 AM
 -- Server version: 5.7.24
 -- PHP Version: 8.3.1
 
@@ -70,12 +70,12 @@ INSERT INTO `events` (`event_id`, `title`, `description`, `event_date`, `event_t
 (4, 'Friday Fun and Chill', 'Relax, grab some food, watch a movie, and enjoy a chill afternoon.', '2026-10-02', '13:00:00', 'LRC 2030', 4, 'FRIDAY FLIX N CHILL.png'),
 (5, 'Rainbowland Art Workshop', 'A creative art workshop for students.', '2026-10-06', '12:00:00', 'NX 111', 2, NULL),
 (6, 'SMART Goals Workshop', 'Interactive workshop focused on creating clear and achievable SMART goals.', '2026-10-15', '13:00:00', 'LRC 2112', 3, 'SMART Goals Flyer 2026.png'),
-(7, 'Cawfee Chat', 'A casual space for students to connect, relax, and chat.', '2026-10-22', '13:00:00', 'LRC 2112', 4, 'Cawfee chat.jpg'),
+(7, 'Cawfee Chat', 'A casual space for students to connect, relax, and chat.', '2026-10-22', '13:00:00', 'LRC 2112', 4, 'Cawfee chat.png'),
 (8, 'Halloween Fun Friday', 'Halloween movie, treats, and a relaxed social afternoon.', '2026-10-23', '12:00:00', 'LRC 2112', 4, 'Halloween Fun Friday Flyer.png'),
-(9, 'Threads of Thought DIY Yarn Painting', 'A mindful creative activity using yarn to create artwork.', '2026-11-02', '13:00:00', 'LRC 2112', 2, 'Threads of Thought.jpg'),
-(10, 'Diwali', 'A campus celebration of Diwali.', '2026-11-06', '12:00:00', 'IGNITE Student Centre', 4, 'Diwali.jpg'),
+(9, 'Threads of Thought DIY Yarn Painting', 'A mindful creative activity using yarn to create artwork.', '2026-11-02', '13:00:00', 'LRC 2112', 2, 'Threads of Thought.png'),
+(10, 'Diwali', 'A campus celebration of Diwali.', '2026-11-06', '12:00:00', 'IGNITE Student Centre', 4, 'Diwali.png'),
 (11, 'Tote Bag Painting', 'Decorate and personalize your own tote bag.', '2026-11-09', '13:00:00', 'LRC 2112', 2, 'Mindful Monday 2 - Tote Bag Flyer.png'),
-(12, 'Sounds and Rhythm of Poetry', 'A poetry and spoken word open mic experience.', '2026-11-10', '13:00:00', 'LRC 2112', 2, 'Sounds and Rhythm.jpg'),
+(12, 'Sounds and Rhythm of Poetry', 'A poetry and spoken word open mic experience.', '2026-11-10', '13:00:00', 'LRC 2112', 2, 'Sounds and Rhythm.png'),
 (13, 'Game and Chill', 'Play games, connect with students, and relax.', '2026-11-13', '13:00:00', 'LRC 2112', 4, 'Game & Chill HSSS IG Post.png'),
 (14, 'Dear Me DIY Master Poster Painting', 'A mindful poster painting activity focused on creativity and self-reflection.', '2026-11-16', '13:00:00', 'LRC 2112', 2, NULL),
 (15, 'Trans Day of Remembrance', 'An event recognizing and remembering members of the transgender community.', '2026-11-20', '12:00:00', 'Humber Arboretum', 1, NULL),
