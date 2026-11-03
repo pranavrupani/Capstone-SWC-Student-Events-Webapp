@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:8889
--- Generation Time: Nov 03, 2026 at 05:06 AM
+-- Generation Time: Nov 03, 2026 at 06:11 AM
 -- Server version: 5.7.24
 -- PHP Version: 8.3.1
 
@@ -79,7 +79,7 @@ INSERT INTO `events` (`event_id`, `title`, `description`, `event_date`, `event_t
 (13, 'Game and Chill', 'Play games, connect with students, and relax.', '2026-11-13', '13:00:00', 'LRC 2112', 4, 'Game & Chill HSSS IG Post.png'),
 (14, 'Dear Me DIY Master Poster Painting', 'A mindful poster painting activity focused on creativity and self-reflection.', '2026-11-16', '13:00:00', 'LRC 2112', 2, NULL),
 (15, 'Trans Day of Remembrance', 'An event recognizing and remembering members of the transgender community.', '2026-11-20', '12:00:00', 'Humber Arboretum', 1, NULL),
-(16, 'Cawfee Chat', 'A casual space for students to connect, relax, and chat.', '2026-11-23', '13:00:00', 'LRC 2112', 4, 'Cawfee chat.jpg'),
+(16, 'Cawfee Chat', 'A casual space for students to connect, relax, and chat.', '2026-11-23', '13:00:00', 'LRC 2112', 4, 'NULL'),
 (17, 'Charms and Chimes', 'A creative activity where students can make charms and decorative pieces.', '2026-11-27', '12:00:00', 'LRC 2112', 2, NULL);
 
 -- --------------------------------------------------------
