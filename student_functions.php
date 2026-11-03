@@ -492,7 +492,6 @@ $result = $conn->query($sql);
         // Render each event card with title, metadata and action buttons.
         if ($result && $result->num_rows > 0) {
             $seenTitles = [];
-            $usedImageFiles = [];
             while ($row = $result->fetch_assoc()) {
                 $eventTitle = trim((string) ($row['title'] ?? ''));
                 if ($eventTitle === '') {
@@ -501,10 +500,14 @@ $result = $conn->query($sql);
 
                 echo "<div class='event-card'>";
                 $flyerImage = $getEventFlyerImage($row['title'], $row['flyer_image_name'] ?? '');
-                if ($flyerImage !== '' && !isset($usedImageFiles[$flyerImage])) {
-                    $usedImageFiles[$flyerImage] = true;
-                    echo "<div class='event-flyer'><img src='" . htmlspecialchars($flyerImage) . "' alt='" . htmlspecialchars($row['title']) . " flyer'></div>";
-                }
+                $flyerImage = $getEventFlyerImage(
+    $row['title'],
+    $row['flyer_image_name'] ?? ''
+);
+
+if ($flyerImage !== '') {
+    echo "<div class='event-flyer'><img src='" . htmlspecialchars($flyerImage) . "' alt='" . htmlspecialchars($row['title']) . " flyer'></div>";
+}
                 echo "<h2>" . htmlspecialchars($row['title']) . "</h2>";
                 echo "<p class='event-meta'><strong>Date:</strong> " . htmlspecialchars($row['event_date']) . "</p>";
                 echo "<p class='event-meta'><strong>Time:</strong> " . htmlspecialchars($row['event_time']) . "</p>";
