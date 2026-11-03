@@ -13,6 +13,35 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'student'
 
 require_once 'db.php';
 
+$imageDirectory = __DIR__ . '/images';
+$imageFiles = [];
+if (is_dir($imageDirectory)) {
+    $imageFiles = array_values(array_filter(scandir($imageDirectory), static fn ($file) => $file !== '.' && $file !== '..' && is_file($imageDirectory . '/' . $file)));
+}
+
+$normalizeImageName = static function ($value) {
+    $value = strtolower((string) $value);
+    $value = str_replace(['&', '-', '_', '.', '/', '\\'], ' ', $value);
+    $value = iconv('UTF-8', 'ASCII//TRANSLIT', $value);
+    $value = preg_replace('/[^a-z0-9\s]/', ' ', (string) $value);
+    $value = preg_replace('/\s+/', ' ', (string) $value);
+    return trim((string) $value);
+};
+
+$getEventFlyerImage = static function ($title, $storedName) use ($imageFiles, $normalizeImageName) {
+    $storedName = trim((string) ($storedName ?? ''));
+    if ($storedName === '') {
+        return '';
+    }
+
+    $fullPath = __DIR__ . '/images/' . $storedName;
+    if (file_exists($fullPath)) {
+        return 'images/' . $storedName;
+    }
+
+    return '';
+};
+
 // The page has two main views: 'events' shows the full event list, and 'saved'
 // shows only the student's saved events. Search filters the event list by title.
 $userId = (int) $_SESSION['user_id'];
@@ -111,7 +140,7 @@ if ($countResult && $countResult->num_rows > 0) {
 
 if ($view === 'saved') {
     // Retrieve the current student's saved events with all event details.
-    $sql = "SELECT s.saved_id, s.user_id, s.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
+    $sql = "SELECT s.saved_id, s.user_id, s.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
             FROM saved_events s
             INNER JOIN events e ON s.event_id = e.event_id
             LEFT JOIN categories c ON e.category_id = c.category_id
@@ -120,14 +149,14 @@ if ($view === 'saved') {
 } else {
     // Show all events, optionally filtered by search query on the title.
     if ($search !== '') {
-        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
+        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
                 FROM events e
                 LEFT JOIN categories c ON e.category_id = c.category_id
                 WHERE LOWER(e.title) LIKE '%" . strtolower($search) . "%'
                 ORDER BY e.event_date ASC" . $studentEventLimit;
     } else {
         // No search filter, so load all events in order.
-        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
+        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
                 FROM events e
                 LEFT JOIN categories c ON e.category_id = c.category_id
                 ORDER BY e.event_date ASC" . $studentEventLimit;
@@ -299,6 +328,22 @@ $result = $conn->query($sql);
             flex-direction: column;
         }
 
+        .event-flyer {
+            width: 100%;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            background: #f8f8f8;
+        }
+
+        .event-flyer img {
+            display: block;
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
         .event-card h2 {
             margin-top: 0;
             margin-bottom: 12px;
@@ -412,8 +457,20 @@ $result = $conn->query($sql);
         <?php
         // Render each event card with title, metadata and action buttons.
         if ($result && $result->num_rows > 0) {
+            $seenTitles = [];
+            $usedImageFiles = [];
             while ($row = $result->fetch_assoc()) {
+                $eventTitle = trim((string) ($row['title'] ?? ''));
+                if ($eventTitle === '') {
+                    continue;
+                }
+
                 echo "<div class='event-card'>";
+                $flyerImage = $getEventFlyerImage($row['title'], $row['flyer_image_name'] ?? '');
+                if ($flyerImage !== '' && !isset($usedImageFiles[$flyerImage])) {
+                    $usedImageFiles[$flyerImage] = true;
+                    echo "<div class='event-flyer'><img src='" . htmlspecialchars($flyerImage) . "' alt='" . htmlspecialchars($row['title']) . " flyer'></div>";
+                }
                 echo "<h2>" . htmlspecialchars($row['title']) . "</h2>";
                 echo "<p class='event-meta'><strong>Date:</strong> " . htmlspecialchars($row['event_date']) . "</p>";
                 echo "<p class='event-meta'><strong>Time:</strong> " . htmlspecialchars($row['event_time']) . "</p>";

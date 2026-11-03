@@ -6,6 +6,34 @@ session_start();
 require_once 'db.php';
 require_once __DIR__ . '/includes/site_styles.php';
 
+$imageDirectory = __DIR__ . '/images';
+$imageFiles = [];
+if (is_dir($imageDirectory)) {
+    $imageFiles = array_values(array_filter(scandir($imageDirectory), static fn ($file) => $file !== '.' && $file !== '..' && is_file($imageDirectory . '/' . $file)));
+}
+
+$normalizeImageName = static function ($value) {
+    $value = strtolower((string) $value);
+    $value = str_replace(['&', '-', '_', '.', '/', '\\'], ' ', $value);
+    $value = iconv('UTF-8', 'ASCII//TRANSLIT', $value);
+    $value = preg_replace('/[^a-z0-9\s]/', ' ', (string) $value);
+    $value = preg_replace('/\s+/', ' ', (string) $value);
+    return trim((string) $value);
+};
+
+$getEventFlyerImage = static function ($title, $storedName) use ($imageFiles, $normalizeImageName) {
+    $storedName = trim((string) ($storedName ?? ''));
+    if ($storedName === '') {
+        return '';
+    }
+
+    $fullPath = __DIR__ . '/images/' . $storedName;
+    if (file_exists($fullPath)) {
+        return 'images/' . $storedName;
+    }
+
+    return '';
+};
 
 // If the user is not logged in, or they are not an admin, they are sent back to the home page.
 // to the login page. This prevents students from reaching the admin tool.
@@ -64,13 +92,13 @@ if ($totalEventsResult && $totalEventsResult->num_rows > 0) {
 
 if ($view === 'events') {
     if ($search !== '') {
-        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
+        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
                 FROM events e
                 LEFT JOIN categories c ON e.category_id = c.category_id
                 WHERE LOWER(e.title) LIKE '%" . strtolower($search) . "%'
                 ORDER BY e.event_date ASC" . $eventListLimit;
     } else {
-        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
+        $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, e.flyer_image_name, c.category_name
                 FROM events e
                 LEFT JOIN categories c ON e.category_id = c.category_id
                 ORDER BY e.event_date ASC" . $eventListLimit;
@@ -415,6 +443,22 @@ if ($categoryResult) {
             flex-direction: column;
         }
 
+        .event-flyer {
+            width: 100%;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+            background: #f8f8f8;
+        }
+
+        .event-flyer img {
+            display: block;
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
         .event-card h2 {
             margin-top: 0;
             margin-bottom: 12px;
@@ -536,12 +580,22 @@ if ($categoryResult) {
             <div class="events-grid">
                 <?php if (isset($result) && $result && $result->num_rows > 0) : ?>
                     <?php
-                    $eventCount = 0;
+                    $usedImageFiles = [];
                     while ($row = $result->fetch_assoc()) :
-                        $eventCount++;
+                        $eventTitle = trim((string) ($row['title'] ?? ''));
+                        if ($eventTitle === '') {
+                            continue;
+                        }
                         ?>
                         <!-- Each card displays one event and the action buttons for edit/delete/view. -->
                         <div class="event-card">
+                            <?php
+                            $flyerImage = $getEventFlyerImage($row['title'], $row['flyer_image_name'] ?? '');
+                            if ($flyerImage !== '' && !isset($usedImageFiles[$flyerImage])) {
+                                $usedImageFiles[$flyerImage] = true;
+                                echo "<div class='event-flyer'><img src='" . htmlspecialchars($flyerImage) . "' alt='" . htmlspecialchars($row['title']) . " flyer'></div>";
+                            }
+                            ?>
                             <h2><?php echo htmlspecialchars($row['title']); ?></h2>
                             <p class="event-meta"><strong>Date:</strong> <?php echo htmlspecialchars($row['event_date']); ?></p>
                             <p class="event-meta"><strong>Time:</strong> <?php echo htmlspecialchars($row['event_time']); ?></p>
