@@ -21,6 +21,7 @@ if (!isset($_SESSION['user_id']) || ($_SESSION['user_role'] ?? '') !== 'admin') 
 // Search text is also read from the query string so admins can filter the list.
 $view = $_GET['view'] ?? 'form';
 $search = trim($_GET['search'] ?? '');
+$showAll = isset($_GET['show_all']) && $_GET['show_all'] === '1';
 $message = '';
 $errors = [];
 $editing = false;
@@ -52,18 +53,27 @@ if (isset($_POST['delete_id'])) {
     }
 }
 
+$eventListLimit = $showAll ? '' : ' LIMIT 3';
+
+$totalEventsSql = 'SELECT COUNT(*) AS total FROM events';
+$totalEventsResult = $conn->query($totalEventsSql);
+$totalEvents = 0;
+if ($totalEventsResult && $totalEventsResult->num_rows > 0) {
+    $totalEvents = (int) $totalEventsResult->fetch_assoc()['total'];
+}
+
 if ($view === 'events') {
     if ($search !== '') {
         $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
                 FROM events e
                 LEFT JOIN categories c ON e.category_id = c.category_id
                 WHERE LOWER(e.title) LIKE '%" . strtolower($search) . "%'
-                ORDER BY e.event_date ASC";
+                ORDER BY e.event_date ASC" . $eventListLimit;
     } else {
         $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
                 FROM events e
                 LEFT JOIN categories c ON e.category_id = c.category_id
-                ORDER BY e.event_date ASC";
+                ORDER BY e.event_date ASC" . $eventListLimit;
     }
 
     $result = $conn->query($sql);
@@ -474,6 +484,27 @@ if ($categoryResult) {
             padding: 20px;
             color: var(--text);
         }
+
+        .load-more-wrap {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .load-more-button {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--text);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 12px 18px;
+            border-radius: 6px;
+        }
+
+        .load-more:hover {
+            background: var(--primary-dark);
+        }
     </style>
 </head>
 <body>
@@ -504,7 +535,11 @@ if ($categoryResult) {
 
             <div class="events-grid">
                 <?php if (isset($result) && $result && $result->num_rows > 0) : ?>
-                    <?php while ($row = $result->fetch_assoc()) : ?>
+                    <?php
+                    $eventCount = 0;
+                    while ($row = $result->fetch_assoc()) :
+                        $eventCount++;
+                        ?>
                         <!-- Each card displays one event and the action buttons for edit/delete/view. -->
                         <div class="event-card">
                             <h2><?php echo htmlspecialchars($row['title']); ?></h2>
@@ -527,6 +562,12 @@ if ($categoryResult) {
                     <div class="empty-state">No events found.</div>
                 <?php endif; ?>
             </div>
+
+            <?php if ($totalEvents > 3 && !$showAll) : ?>
+                <div class="load-more-wrap">
+                    <a class="load-more-button" href="admin_functions.php?view=events&show_all=1<?php echo $search !== '' ? '&search=' . urlencode($search) : ''; ?>">Load More Events</a>
+                </div>
+            <?php endif; ?>
         <?php else : ?>
             <!-- Form view: this is where the admin adds a new event or edits an existing one. -->
             <?php if ($message !== '') : ?>

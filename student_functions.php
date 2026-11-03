@@ -18,6 +18,7 @@ require_once 'db.php';
 $userId = (int) $_SESSION['user_id'];
 $view = $_GET['view'] ?? 'events';
 $search = trim($_GET['search'] ?? '');
+$showAll = isset($_GET['show_all']) && $_GET['show_all'] === '1';
 $successMessage = '';
 $errorMessage = '';
 
@@ -100,6 +101,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // If the student is viewing saved events, load only the events they saved.
 // Otherwise, load all events, optionally filtered by search query.
+$studentEventLimit = $showAll ? '' : ' LIMIT 3';
+$countSql = 'SELECT COUNT(*) AS total FROM events';
+$countResult = $conn->query($countSql);
+$totalEvents = 0;
+if ($countResult && $countResult->num_rows > 0) {
+    $totalEvents = (int) $countResult->fetch_assoc()['total'];
+}
+
 if ($view === 'saved') {
     // Retrieve the current student's saved events with all event details.
     $sql = "SELECT s.saved_id, s.user_id, s.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
@@ -115,13 +124,13 @@ if ($view === 'saved') {
                 FROM events e
                 LEFT JOIN categories c ON e.category_id = c.category_id
                 WHERE LOWER(e.title) LIKE '%" . strtolower($search) . "%'
-                ORDER BY e.event_date ASC";
+                ORDER BY e.event_date ASC" . $studentEventLimit;
     } else {
         // No search filter, so load all events in order.
         $sql = "SELECT e.event_id, e.title, e.description, e.event_date, e.event_time, e.location, c.category_name
                 FROM events e
                 LEFT JOIN categories c ON e.category_id = c.category_id
-                ORDER BY e.event_date ASC";
+                ORDER BY e.event_date ASC" . $studentEventLimit;
     }
 }
 
@@ -340,6 +349,23 @@ $result = $conn->query($sql);
             background: #f7efea;
             color: var(--text);
         }
+
+        .load-more-wrap {
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .load-more-button {
+            display: inline-block;
+            background: var(--primary);
+            color: var(--text);
+            text-decoration: none;
+            font-weight: bold;
+            padding: 12px 18px;
+            border-radius: 6px;
+        }
     </style>
 </head>
 <body>
@@ -416,5 +442,11 @@ $result = $conn->query($sql);
         }
         ?>
     </div>
+
+    <?php if ($view !== 'saved' && !$showAll && $totalEvents > 3) : ?>
+        <div class="load-more-wrap">
+            <a class="load-more-button" href="student_functions.php?view=events&show_all=1<?php echo $search !== '' ? '&search=' . urlencode($search) : ''; ?>">Load More</a>
+        </div>
+    <?php endif; ?>
 </body>
 </html>
